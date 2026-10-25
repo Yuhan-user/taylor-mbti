@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Taylor Swift 性格测试 · 12 Albums MBTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Playfair+Display:ital,wght@0,600;0,900;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d12; --panel:rgba(255,255,255,.06); --txt:#f2efe9; --muted:rgba(242,239,233,.62);
+  --accent:#c9a86a; --cardBorder:rgba(255,255,255,.14); --track:rgba(255,255,255,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Noto Sans SC',sans-serif;color:var(--txt);background:var(--bg);
+  overflow-x:hidden;transition:background 1.2s ease,color .8s ease;
+}
+#deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#deco svg{width:100%;height:100%;display:block}
+/* --- gentle motion --- */
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes driftX{0%,100%{transform:translateX(0)}50%{transform:translateX(24px)}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.85}}
+@keyframes glowPulse{0%,100%{opacity:.25}50%{opacity:.6}}
+#deco .fl{animation:floatY 10s ease-in-out infinite}
+#deco .fl2{animation:floatY 15s ease-in-out 1.5s infinite}
+#deco .dr{animation:driftX 20s ease-in-out infinite}
+#deco .dr2{animation:driftX 28s ease-in-out 3s infinite}
+#deco .tw{animation:twinkle 4.5s ease-in-out infinite}
+#deco .tw2{animation:twinkle 6.5s ease-in-out 1.4s infinite}
+#deco .tw3{animation:twinkle 8s ease-in-out 2.6s infinite}
+#deco .pulse{animation:glowPulse 9s ease-in-out infinite}
+.screen{position:relative;z-index:1;display:none;min-height:100vh;flex-direction:column;align-items:center;padding:0 18px 60px}
+.screen.active{display:flex}
+.fade-in{animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ---------- Intro ---------- */
+#intro{justify-content:center;min-height:100vh;text-align:center;padding-top:8vh}
+.era-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:640px;margin-bottom:34px}
+.chip{font-size:12px;padding:6px 14px;border-radius:999px;border:1px solid var(--chipc,#888);color:var(--chipc,#888);opacity:.85;letter-spacing:1px}
+.intro-eyebrow{letter-spacing:6px;font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
+h1.title{
+  font-family:'Playfair Display',serif;font-size:clamp(38px,8vw,72px);font-weight:900;line-height:1.05;
+  background:linear-gradient(120deg,#f7e7c3,#e0b96a,#b8863b,#f7e7c3);-webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:14px;
+}
+.intro-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(16px,3.4vw,21px);color:var(--muted);margin-bottom:10px}
+.intro-cn{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--muted);max-width:520px;margin:18px auto 40px;line-height:2}
+.btn{
+  border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;
+  padding:16px 46px;border-radius:999px;font-size:16px;letter-spacing:3px;font-weight:500;
+  background:linear-gradient(120deg,#e8c87e,#c9a24e);color:#241a06;
+  box-shadow:0 8px 30px rgba(201,162,78,.35);transition:transform .25s,box-shadow .25s;
+}
+.btn:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(201,162,78,.5)}
+.btn:active{transform:scale(.97)}
+.intro-note{margin-top:22px;font-size:12px;color:var(--muted);letter-spacing:1px}
+
+/* ---------- Quiz ---------- */
+#quiz{max-width:720px;width:100%;margin:0 auto}
+.q-top{width:100%;max-width:720px;position:sticky;top:0;z-index:5;padding:16px 0 12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.progress-track{height:4px;border-radius:4px;background:var(--track);overflow:hidden}
+.progress-fill{height:100%;width:0%;border-radius:4px;background:var(--era);transition:width .5s ease}
+.q-count{display:flex;justify-content:space-between;margin-top:10px;font-size:11px;letter-spacing:2px;color:var(--muted)}
+
+/* ---------- Album Cover Art ---------- */
+.cover-wrap{display:flex;flex-direction:column;align-items:center;margin-top:26px}
+.cover-art{
+  width:150px;height:150px;border-radius:14px;overflow:hidden;position:relative;
+  box-shadow:0 16px 46px var(--eraGlow),0 0 0 1px var(--cardBorder),0 0 0 6px rgba(255,255,255,.06);
+  animation:coverIn .8s cubic-bezier(.2,.8,.3,1.1) both;transition:transform .4s ease;
+}
+.cover-art:hover{transform:scale(1.04) rotate(-1deg)}
+.cover-art svg{width:100%;height:100%;display:block}
+.cover-shine{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.25) 0%,transparent 30%,transparent 65%,rgba(255,255,255,.1) 100%);pointer-events:none}
+.cover-cap{margin-top:12px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+@keyframes coverIn{from{opacity:0;transform:translateY(16px) scale(.86) rotate(2deg)}to{opacity:1;transform:none}}
+.era-tag{
+  display:inline-flex;align-items:center;gap:10px;margin:30px 0 8px;
+  font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--era);font-weight:500;
+}
+.era-tag::before,.era-tag::after{content:"";width:34px;height:1px;background:var(--era);opacity:.7}
+.album-name{
+  font-family:var(--serif,'Playfair Display'),serif;font-size:clamp(30px,6.4vw,46px);font-weight:900;
+  font-style:var(--albumItalic,normal);color:var(--era);text-align:center;line-height:1.1;
+  text-shadow:0 2px 18px var(--eraGlow);
+}
+.q-question{
+  font-family:'Noto Serif SC',serif;font-size:clamp(16px,3.6vw,20px);color:var(--txt);
+  text-align:center;margin:16px auto 8px;max-width:520px;line-height:1.8;font-weight:600;
+}
+.q-hint{text-align:center;font-size:12px;color:var(--muted);margin-bottom:26px;letter-spacing:1px}
+.songs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;width:100%}
+.song-card{
+  position:relative;border:1px solid var(--cardBorder);border-radius:12px;cursor:pointer;
+  padding:13px 12px 11px;background:var(--panel);color:var(--txt);
+  transition:all .22s ease;text-align:left;overflow:hidden;font-family:'Noto Sans SC',sans-serif;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.song-card:hover{border-color:var(--era);transform:translateY(-3px);box-shadow:0 10px 26px var(--eraGlow)}
+.song-card:active{transform:scale(.97)}
+.song-card .num{font-size:9px;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:4px;font-family:'Cormorant Garamond',serif}
+.song-card .name{font-size:13.5px;font-weight:500;line-height:1.45;display:block}
+.song-card .glow{position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 20% 0%,var(--eraGlow),transparent 70%);transition:opacity .3s;pointer-events:none}
+.song-card:hover .glow{opacity:1}
+.song-card.playing{border-color:var(--era);box-shadow:0 0 0 1.5px var(--era),0 8px 26px var(--eraGlow)}
+.song-card.playing::after{
+  content:"♪";position:absolute;top:8px;right:10px;font-size:12px;color:var(--era);
+  animation:pulse 1s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.audio-tip{margin-top:14px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:1.5px}
+.audio-fail{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:20;
+  background:rgba(0,0,0,.72);color:#f2efe9;font-size:12px;padding:9px 18px;border-radius:999px;
+  letter-spacing:1px;opacity:0;transition:opacity .3s;pointer-events:none;backdrop-filter:blur(6px)}
+.audio-fail.show{opacity:1}
+.card-count{margin-top:22px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:2px}
+
+/* ---------- Result ---------- */
+#result{max-width:660px;width:100%;margin:0 auto;text-align:center;padding-top:60px}
+.result-eyebrow{letter-spacing:5px;font-size:11px;color:var(--muted);text-transform:uppercase}
+.mbti-letters{display:flex;justify-content:center;gap:10px;margin:26px 0 8px}
+.mbti-letter{
+  width:clamp(58px,15vw,80px);height:clamp(58px,15vw,80px);border-radius:18px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:clamp(28px,7vw,42px);font-weight:900;
+  background:var(--panel);border:1px solid var(--era);color:var(--era);animation:pop .5s ease both;
+}
+.mbti-letter:nth-child(2){animation-delay:.12s}.mbti-letter:nth-child(3){animation-delay:.24s}.mbti-letter:nth-child(4){animation-delay:.36s}
+@keyframes pop{from{opacity:0;transform:scale(.4) rotate(-8deg)}to{opacity:1;transform:none}}
+.type-title{font-family:'Noto Serif SC',serif;font-size:clamp(24px,5.4vw,34px);font-weight:900;margin:10px 0 4px;color:var(--era)}
+.type-song{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--muted);margin-bottom:30px}
+.type-desc{
+  font-family:'Noto Serif SC',serif;text-align:left;font-size:15px;line-height:2.1;color:var(--txt);
+  background:var(--panel);border:1px solid var(--cardBorder);border-radius:18px;padding:28px 26px;margin-bottom:26px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.type-desc b{color:var(--era)}
+.dims{display:flex;flex-direction:column;gap:14px;margin-bottom:34px;text-align:left}
+.dim{display:flex;align-items:center;gap:12px;font-size:12px}
+.dim .lab{width:74px;color:var(--muted);letter-spacing:1px;flex-shrink:0}
+.dim .bar{flex:1;height:8px;border-radius:8px;background:var(--track);position:relative;overflow:hidden}
+.dim .fill{position:absolute;top:0;left:0;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--era),var(--era2,#fff8));transition:width 1s ease}
+.dim .pct{width:34px;text-align:right;color:var(--era);font-weight:700;font-family:'Cormorant Garamond',serif;font-size:15px}
+.result-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.btn.ghost{background:var(--panel);border:1px solid var(--era);color:var(--era);box-shadow:none}
+.top-songs{margin:6px 0 30px;text-align:left;background:var(--panel);border-radius:18px;padding:22px 24px;border:1px solid var(--cardBorder)}
+.top-songs h3{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--era);margin-bottom:12px;letter-spacing:2px}
+.top-songs li{list-style:none;font-size:13px;line-height:2;color:var(--muted)}
+.top-songs li b{color:var(--txt);font-weight:500}
+.copied{font-size:12px;color:var(--era);margin-top:12px;height:16px;opacity:0;transition:opacity .3s}
+.copied.show{opacity:1}
+footer{margin-top:auto;padding-top:50px;font-size:11px;color:var(--muted);text-align:center;line-height:2;letter-spacing:1px}
+@media (max-width:420px){.songs{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="deco"></div>
+
+<!-- ================= INTRO ================= -->
+<section id="intro" class="screen active">
+  <div class="era-chips" id="eraChips"></div>
+  <div class="intro-eyebrow fade-in">Taylor Swift × MBTI · 12 Albums Edition</div>
+  <h1 class="title fade-in">The Eras<br>Personality Test</h1>
+  <div class="intro-sub fade-in">Which Taylor Swift era are you?</div>
+  <p class="intro-cn fade-in">
+    12 道题，对应 Taylor Swift 的 12 张专辑。<br>
+    每一题，选出你最无法抗拒的那首歌——<br>
+    每一首歌都藏着一个性格密码。<br>
+    12 张专辑 · 200+ 首歌 · 16 种结果
+  </p>
+  <button class="btn fade-in" onclick="startQuiz()">开 始 测 试</button>
+  <div class="intro-note fade-in">✦ 没有对错，只有你的 Era ✦</div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz" class="screen">
+  <div class="q-top">
+    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+    <div class="q-count"><span id="qNow">01 / 12</span><span id="qAlbumName"></span></div>
+  </div>
+  <div class="cover-wrap">
+    <div class="cover-art" id="coverArt"></div>
+    <div class="cover-cap" id="coverCap"></div>
+  </div>
+  <div class="era-tag" id="eraTag"></div>
+  <div class="album-name" id="albumName"></div>
+  <div class="q-question" id="qQuestion"></div>
+  <div class="q-hint">选一首此刻最想单曲循环的歌 ↓</div>
+  <div class="songs" id="songs"></div>
+  <div class="card-count" id="cardCount"></div>
+  <div class="audio-tip" id="audioTip">✦ 电脑端：鼠标悬停在歌名上可试听片段 · 手机端：长按歌曲卡片试听 ✦</div>
+  <div class="audio-fail" id="audioFail">暂时找不到这首歌的试听片段</div>
+</section>
+
+<!-- ================= RESULT ================= -->
+<section id="result" class="screen">
+  <div class="cover-wrap" style="margin-top:46px">
+    <div class="cover-art" id="coverArtR" style="animation-delay:.15s"></div>
+    <div class="cover-cap" id="coverCapR"></div>
+  </div>
+  <div class="fade-in" style="width:100%">
+    <div class="result-eyebrow">Your Era Is</div>
+    <div class="mbti-letters" id="mbtiLetters"></div>
+    <div class="type-title" id="typeTitle"></div>
+    <div class="type-song" id="typeSong"></div>
+    <div class="type-desc" id="typeDesc"></div>
+    <div class="dims" id="dims"></div>
+    <div class="top-songs">
+      <h3>♪ 你的性格共鸣曲</h3>
+      <ul id="resonant"></ul>
+    </div>
+    <div class="result-actions">
+      <button class="btn" onclick="copyLink()">分享给朋友测</button>
+      <button class="btn ghost" onclick="location.reload()">再测一次</button>
+    </div>
+    <div class="copied" id="copied">链接已复制，快发给你的 Swiftie 朋友们 ✦</div>
+  </div>
+  <footer>12 Albums Edition · 数据仅保存在你的设备上 · Made by a Swiftie, for Swifties</footer>
+</section>
+
+<script>
+/* =============== 12 Albums Data =============== */
+/* trait: E外向/I内省  S实感/N直觉  T理性/F感性  J计划/P随性 */
+const ALBUMS = [
+{ key:"debut", album:"Taylor Swift", year:"2006 · Debut", era:"#9fe0da", eraGlow:"rgba(127,196,196,.3)", era2:"#dff5f2",
+  serif:"'Cormorant Garamond',serif", italic:false,
+  q:"故事从这里开始。你决定把哪首歌放进人生的第一张 demo？",
+  songs:[["Tim McGraw","N"],["Picture to Burn","E"],["Teardrops on My Guitar","F"],["A Place in This World","P"],["Cold as You","T"],["The Outside","I"],["Tied Together with a Smile","F"],["Stay Beautiful","E"],["Should've Said No","J"],["Mary's Song (Oh My My My)","N"],["Our Song","E"],["I'm Only Me When I'm with You","I"],["Invisible","F"],["A Perfectly Good Heart","T"]]},
+
+{ key:"fearless", album:"Fearless", year:"2008 · Golden Courage", era:"#a8770f", eraGlow:"rgba(232,200,90,.4)", era2:"#dfa53a",
+  serif:"'Cormorant Garamond',serif", italic:true,
+  q:"这是一个关于勇敢去爱的金色童话。你戴着王冠走进舞会，BGM 是哪首？",
+  songs:[["Fearless","E"],["Fifteen","N"],["Love Story","J"],["Hey Stephen","F"],["White Horse","T"],["You Belong with Me","E"],["Breathe","F"],["Tell Me Why","T"],["You're Not Sorry","I"],["The Way I Loved You","E"],["Forever & Always","F"],["The Best Day","F"],["Change","J"],["Today Was a Fairytale","N"],["Jump Then Fall","E"],["Untouchable","N"],["Come In with the Rain","I"],["SuperStar","N"],["The Other Side of the Door","F"],["Superman","P"],["You All Over Me","F"],["Mr. Perfectly Fine","E"],["We Were Happy","I"],["That's When","J"],["Don't You","I"],["Bye Bye Baby","T"],["If This Was a Movie","F"]]},
+
+{ key:"speaknow", album:"Speak Now", year:"2010 · Purple Whisper", era:"#6a47a3", eraGlow:"rgba(178,141,219,.35)", era2:"#c9a6ee",
+  serif:"'Cormorant Garamond',serif", italic:true,
+  q:"婚礼上，宾客都在祈祷。你在心里对哪首歌许愿？",
+  songs:[["Mine","J"],["Sparks Fly","E"],["Back to December","T"],["Speak Now","P"],["Dear John","F"],["Mean","T"],["The Story of Us","E"],["Never Grow Up","F"],["Enchanted","N"],["Better Than Revenge","T"],["Innocent","F"],["Haunted","I"],["Last Kiss","I"],["Long Live","N"],["Ours","J"],["Superman","P"],["Castles Crumbling","I"],["Electric Touch","E"],["When Emma Falls in Love","F"],["I Can See You","P"],["Fools Gold","T"],["Timeless","N"]]},
+
+{ key:"red", album:"Red", year:"2012 · Scarlet Heart", era:"#7e1813", eraGlow:"rgba(224,72,62,.35)", era2:"#e2544a",
+  serif:"'Cormorant Garamond',serif", italic:false,
+  q:"爱他是红色的——炙热又滚烫。哪首歌是你此刻的心跳频率？",
+  songs:[["State of Grace","N"],["Red","E"],["Treacherous","P"],["I Knew You Were Trouble","T"],["22","E"],["I Almost Do","I"],["We Are Never Ever Getting Back Together","T"],["Stay Stay Stay","E"],["The Last Time","F"],["Holy Ground","E"],["Sad Beautiful Tragic","I"],["The Lucky One","T"],["Everything Has Changed","F"],["Starlight","N"],["Begin Again","J"],["The Moment I Knew","F"],["Come Back... Be Here","I"],["Girl at Home","T"],["All Too Well (10 Min Version)","F"],["Better Man","T"],["Nothing New","I"],["Babe","F"],["Message in a Bottle","E"],["Forever Winter","F"],["Run","J"],["The Very First Night","E"],["State of Grace (Acoustic)","I"],["All Too Well","F"],["Treacherous (Original Demo)","I"],["Come Back... Be Here (Live)","F"]]},
+
+{ key:"1989", album:"1989", year:"2014 · Neon Skyline", era:"#9fd4f8", eraGlow:"rgba(109,185,242,.4)", era2:"#cfe6f7",
+  serif:"'Playfair Display',serif", italic:false,
+  q:"欢迎来到纽约的天际线。夜风正好，你把音响开到最大，放的是——",
+  songs:[["Welcome to New York","E"],["Blank Space","N"],["Style","T"],["Out of the Woods","F"],["All You Had to Do Was Stay","T"],["Shake It Off","E"],["I Wish You Would","F"],["Bad Blood","T"],["Wildest Dreams","N"],["How You Get the Girl","J"],["This Love","I"],["I Know Places","I"],["Clean","T"],["Wonderland","P"],["You Are in Love","I"],["New Romantics","E"],["'Slut!'","N"],["Say Don't Go","F"],["Now That We Don't Talk","T"],["Suburban Legends","F"],["Is It Over Now?","T"]]},
+
+{ key:"reputation", album:"reputation", year:"2017 · Monochrome", era:"#3a3733", eraGlow:"rgba(60,56,50,.3)", era2:"#6a665f",
+  serif:"'Playfair Display',serif", italic:false,
+  q:"旧的名字已经死了。霓虹熄灭，你在暴风雨里戴上蛇形戒指，走向——",
+  songs:[["...Ready for It?","E"],["End Game","J"],["I Did Something Bad","T"],["Don't Blame Me","F"],["Delicate","I"],["Look What You Made Me Do","T"],["So It Goes...","P"],["Gorgeous","E"],["Getaway Car","P"],["King of My Heart","F"],["Dancing with Our Hands Tied","F"],["Dress","I"],["This Is Why We Can't Have Nice Things","E"],["Call It What You Want","I"],["New Year's Day","J"]]},
+
+{ key:"lover", album:"Lover", year:"2019 · Pastel Dawn", era:"#f2a0c5", eraGlow:"rgba(244,154,193,.4)", era2:"#f7c8dd",
+  serif:"'Cormorant Garamond',serif", italic:false,
+  q:"心形手链已经戴上，粉色的天光落进房间。哪首歌是你写给这个世界的情书？",
+  songs:[["I Forgot That You Existed","T"],["Cruel Summer","E"],["Lover","F"],["The Man","T"],["The Archer","I"],["I Think He Knows","E"],["Miss Americana & The Heartbreak Prince","N"],["Paper Rings","J"],["Cornelia Street","F"],["Death By A Thousand Cuts","I"],["London Boy","E"],["Soon You'll Get Better","F"],["False God","P"],["You Need To Calm Down","E"],["Afterglow","F"],["ME!","E"],["It's Nice To Have A Friend","I"],["Daylight","J"]]},
+
+{ key:"folklore", album:"folklore", year:"2020 · Grey Muse", era:"#b9c6b4", eraGlow:"rgba(154,168,153,.35)", era2:"#d6ded4",
+  serif:"'Cormorant Garamond',serif", italic:true,
+  q:"森林小屋里，壁炉低燃，你翻开一本别人留下的小说。最吸引你的故事线是——",
+  songs:[["the 1","N"],["cardigan","F"],["the last great american dynasty","N"],["exile (feat. Bon Iver)","I"],["my tears ricochet","T"],["mirrorball","E"],["seven","N"],["august","P"],["this is me trying","I"],["illicit affairs","F"],["invisible string","J"],["mad woman","T"],["epiphany","I"],["betty","E"],["peace","F"],["hoax","I"],["the lakes","I"]]},
+
+{ key:"evermore", album:"evermore", year:"2020 · Autumn Dusk", era:"#8a3a24", eraGlow:"rgba(217,127,78,.4)", era2:"#d97f4e",
+  serif:"'Cormorant Garamond',serif", italic:true,
+  q:"同一片森林的深秋。夕阳把一切染成酒红与琥珀，你走进的房间挂着——",
+  songs:[["willow","F"],["champagne problems","T"],["gold rush","N"],["'tis the damn season","I"],["tolerate it","F"],["no body, no crime","T"],["happiness","T"],["dorothea","N"],["coney island (feat. The National)","I"],["ivy","F"],["cowboy like me","P"],["long story short","J"],["marjorie","F"],["closure","T"],["evermore","I"],["right where you left me","I"],["it's time to go","T"]]},
+
+{ key:"midnights", album:"Midnights", year:"2022 · Starlit Ink", era:"#aebcff", eraGlow:"rgba(142,154,247,.4)", era2:"#dfe5ff",
+  serif:"'Playfair Display',serif", italic:false,
+  q:"凌晨 12:03，窗帘半开，城市在呼吸。你失眠时脑子里循环的是——",
+  songs:[["Lavender Haze","I"],["Maroon","F"],["Anti-Hero","T"],["Snow On The Beach (feat. Lana Del Rey)","N"],["You're On Your Own, Kid","I"],["Midnight Rain","T"],["Question...?","F"],["Vigilante Shit","T"],["Bejeweled","E"],["Labyrinth","I"],["Karma","E"],["Sweet Nothing","F"],["Mastermind","J"],["The Great War","T"],["Bigger Than The Whole Sky","F"],["Paris","E"],["High Infidelity","P"],["Glitch","F"],["Would've, Could've, Should've","F"],["Dear Reader","I"]]},
+
+{ key:"ttpd", album:"The Tortured Poets Department", year:"2024 · Ivory Ink", era:"#cfc8b8", eraGlow:"rgba(207,198,180,.3)", era2:"#8f887a",
+  serif:"'Playfair Display',serif", italic:false,
+  q:"打字机嗒嗒作响，诗人的部门彻夜亮灯。你在稿纸上写下的第一行是——",
+  songs:[["Fortnight (feat. Post Malone)","I"],["The Tortured Poets Department","N"],["My Boy Only Breaks His Favorite Toys","F"],["Down Bad","E"],["So Long, London","F"],["But Daddy I Love Him","P"],["Fresh Out the Slammer","J"],["Florida!!!","E"],["Guilty as Sin?","F"],["Who's Afraid of Little Old Me?","T"],["I Can Fix Him (No Really I Can)","T"],["loml","F"],["I Can Do It With a Broken Heart","E"],["The Smallest Man Who Ever Lived","T"],["The Alchemy","J"],["Clara Bow","N"],["The Black Dog","I"],["imgonnagetyouback","P"],["The Albatross","I"],["Chloe or Sam or Sophia or Marcus","N"],["How Did It End?","I"],["So High School","E"],["I Hate It Here","I"],["thanK you aIMee","T"],["I Look in People's Windows","I"],["The Prophecy","F"],["Cassandra","N"],["Peter","F"],["The Bolter","P"],["Robin","F"],["The Manuscript","I"]]},
+
+{ key:"showgirl", album:"The Life of a Showgirl", year:"2025 · Champagne Sparkle", era:"#a34a10", eraGlow:"rgba(242,162,92,.45)", era2:"#d96a2c",
+  serif:"'Playfair Display',serif", italic:true,
+  q:"聚光灯亮起，亮片像香槟气泡一样炸开。你踩上舞台的脚步声属于——",
+  songs:[["The Fate of Ophelia","N"],["Elizabeth Taylor","E"],["Opalite","E"],["Father Figure","T"],["Eldest Daughter","F"],["Rustin'","P"],["Actually Romantic","T"],["Wi$h Li$t","J"],["Wood","E"],["CANCELLED!","T"],["Honey","F"],["The Life of a Showgirl","E"]]}
+];
+
+/* =============== 16 MBTI Results =============== */
+const RESULTS = {
+INTJ:{title:"午夜建筑师 · The Mastermind",song:"Mastermind",desc:"你不是意外闯入故事的人，你是<b>写下整本书的人</b>。像《Midnights》里的深蓝色一样，你的智慧沉静、精密、带着一点掌控欲的浪漫。你习惯在深夜复盘一切，把感情和人生都当成可以推演的棋局——但只有最亲近的人知道，你的「运筹帷幄」背后藏着一颗极其柔软的心。你不需要很多人的掌声，你只需要一个真正看懂你棋谱的人。"},
+INTP:{title:"诗人观察家 · The Quiet Theorist",song:"I Hate It Here",desc:"你活在无数个平行的思维宇宙里。《The Tortured Poets Department》为你而生——你会在深夜突然想通某个哲学问题，然后为一件十年前的小事失眠。你的世界很大，大到常常忘记回到现实。但正是你这种「用逻辑拥抱浪漫」的奇怪能力，让平凡的生活长出了童话的质感。"},
+ENTJ:{title:"舞台指挥官 · The Showstopper",song:"Look What You Made Me Do",desc:"<b>旧的我已经死了。</b>你是 reputation 金色蛇光里最亮的那一束——目标明确、气场全开、把每一次低谷都重构成登顶的台阶。你不怕被议论，因为你知道：他们议论你的时候，已经在你的剧场里买了票。你的野心从不遮掩，你的忠诚也同样滚烫。"},
+ENTP:{title:"霓虹炼金师 · The Neon Alchemist",song:"Blank Space",desc:"你的人生是一部<b>自带反转的公路片</b>。像《1989》的合成器音墙一样，你用快节奏和妙语把生活调成高饱和度。你喜欢新点子、新城市、新开始，讨厌无聊胜过讨厌伤害。人们以为你三分钟热度，其实你只是太清楚：生命很长，值得不断重写开头。"},
+INFJ:{title:"灰色缪斯 · The Grey Muse",song:"peace",desc:"你像 folklore 里那件旧开衫——<b>安静，却裹住过很多个冬天</b>。你的共情力强到近乎超能力：你能读懂别人没说出口的那句话，也常常替别人扛下他们不知道的重量。你在人潮里保持温柔的距离，把最深的自己留给极少数「隐形字符串」连接的人。"},
+INFP:{title:"永恒梦想家 · The Fairy Tale Keeper",song:"Enchanted",desc:"你的内心住着一整座<b>Speak Now 的紫色谱写室</b>。你相信童话不是逃避现实，而是另一种认真生活的方式。你的感受力是你最锋利也最柔软的天赋——你写下的每一段心情都可能成为别人的救赎。请像保护歌本一样保护你自己，这个世界需要你的浪漫。"},
+ENFJ:{title:"金色灯塔 · The Golden Daylight",song:"Daylight",desc:"你是 Lover 专辑里<b>推开窗户的那道光</b>。你天生会照顾人，擅长把一群陌生人变成一个家。你在关系里愿意先伸出手，也愿意在争吵后先说「我们谈谈」。你给别人的是清晨的日光而非烈日——温暖、明亮、不烫伤任何人。记住：灯塔也需要被照亮的时刻。"},
+ENFP:{title:"残酷夏日 · The Cruel Summer Spark",song:"Cruel Summer",desc:"你是<b>夏日午后突然降下来的那场暴雨</b>——热烈、即兴、无法预测。你的快乐有感染力，你的好奇心像不灭的霓虹灯牌。别人看到你热闹的一面，却不知道你深夜也会单曲循环《Death By A Thousand Cuts》。你最大的魔法是：把每一次心碎都变成下一段冒险的序曲。"},
+ISTJ:{title:"长情守约人 · The Keeper of Promises",song:"New Year's Day",desc:"你相信爱不是烟花，而是<b>新年清晨一起收拾的彩带</b>。你是朋友圈里的定海神针：答应的事一定做到，记性和靠谱程度都令人安心。你像 debut 专辑一样，在喧嚣世界里坚持自己最初的音色。你的深情从不喧哗，却经得起十年后回头看。"},
+ISFJ:{title:"十二月守护者 · The Gentle December",song:"Back to December",desc:"你是那种<b>会记得所有人喜好的温暖存在</b>。你安静、体贴、责任感重，习惯把「没关系」说得比「我难过」更流利。你像 Fearless 里那件白色的礼服：干净、克制，却愿意为重要的人倾尽所有。这一次，也请记得把自己放进被守护的名单里。"},
+ESTJ:{title:"长演制作人 · The Long Live Director",song:"Long Live",desc:"你是能把一场梦<b>真正盖成城堡的人</b>。你有执行力、有原则、有把混乱变成秩序的天赋——团队里你说「我来」的时候，大家就都松了口气。你像 Speak Now 的管弦乐一样恢弘有序。你的世界规则清晰、爱得笃定，跟你并肩的人，都是被你写进史诗里的名字。"},
+ESFJ:{title:"派对常驻嘉宾 · The Party Daylight",song:"22",desc:"你的存在本身就是<b>「今天值得庆祝」的证据</b>。你热情、周到、记得每个人的生日和咖啡口味。你是聚会上让气氛升温、也是散场后挨个发消息确认大家到家的人。你不怕当别人快乐的支点，但记得：你也可以说「今晚我先回家，我要充电」。"},
+ISTP:{title:"逃离艺术家 · The Getaway Driver",song:"Getaway Car",desc:"你冷静、利落、<b>永远备好一条 Plan B 的后路</b>。你不爱解释，用行动说话，危机时刻反而最镇定。你的感情观像一辆加速的敞篷车：可以全情投入，但绝不困在原地。别人以为你疏离，其实你只是把忠诚给了极少数配得上的人。"},
+ISFP:{title:"暗调调色师 · The Delicate Hue",song:"Delicate",desc:"你是<b>一杯在黑暗里微微发亮的手冲</b>。审美是你与世界对话的方式——你穿的颜色、听的歌、拍下的瞬间，都在替你说没说出口的话。你慢热但真诚，讨厌虚与委蛇。像 reputation 里那首最轻的歌一样：你的温柔很安静，但懂得的人会珍藏很久。"},
+ESTP:{title:"镀金烟花 · The Gold Rush Firework",song:"Gorgeous",desc:"你的能量像<b> reputation 巡演开场的那声爆炸</b>。你行动力爆表，敢爱敢怼敢重新开始。你享受当下、擅长破冰、天生让人想靠近。你的人生哲学很直接：犹豫就会败北，先冲再说。偶尔的「深思熟虑」，会让你这枚烟花比现在更耀眼。"},
+ESFP:{title:"亮片主角 · The Showgirl Soul",song:"The Life of a Showgirl",desc:"<b>聚光灯追着你跑</b>。你热情、幽默、表现力惊人，走到哪里哪里就是舞台。你知道如何把平凡的一天变成节日，也懂得「演出必须继续」背后的倔强。台下你会疲惫，但你从不让它熄灭你眼里的亮片。你就是那首歌里唱的：让别人相信童话，本身是一种才华。"}
+};
+
+const DIMS=[["E","I","外向 E · 内省 I"],["N","S","直觉 N · 实感 S"],["F","T","感性 F · 理性 T"],["P","J","随性 P · 计划 J"]];
+
+/* =============== Era Themes: refined full-page worlds =============== */
+const THEMES = {
+debut:{
+  bg:"radial-gradient(900px 500px at 80% 8%, rgba(255,255,255,.12), transparent 60%), linear-gradient(180deg,#103f44 0%,#1d5f63 42%,#3d8f88 78%,#8fbfae 100%)",
+  txt:"#f2ead6",muted:"rgba(242,234,214,.62)",panel:"rgba(255,255,255,.1)",cardBorder:"rgba(223,245,242,.32)",track:"rgba(242,234,214,.2)",
+  cap:"a place in this world",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0cd"/><stop offset="1" stop-color="#cdeee5"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgd)"/><circle cx="58" cy="158" r="66" fill="#4f9fa5" opacity=".3"/><circle cx="172" cy="34" r="46" fill="#ffffff" opacity=".25"/><g stroke="#1f5c60" stroke-width="4" fill="none" opacity=".9"><circle cx="100" cy="130" r="25"/><path d="M89 108 L79 42"/><path d="M111 108 L121 42"/></g><rect x="75" y="28" width="50" height="16" rx="5" fill="#1f5c60"/><text x="100" y="183" text-anchor="middle" font-size="13" font-style="italic" fill="#175054" font-family="serif">Taylor Swift</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><circle cx="820" cy="160" r="110" fill="#dff5f2" opacity=".1" class="pulse"/><circle cx="820" cy="160" r="60" fill="#dff5f2" opacity=".14"/><g class="dr" stroke="#dff5f2" stroke-width="3.5" fill="none" opacity=".25"><path d="M-50 1270 Q125 1220 250 1270 T550 1270 T850 1270 T1150 1270"/></g><g class="dr2" stroke="#dff5f2" stroke-width="3" fill="none" opacity=".18"><path d="M-50 1330 Q125 1280 250 1330 T550 1330 T850 1330 T1150 1330"/></g><g class="fl" fill="#dff5f2" opacity=".3"><path d="M150 300 v-52 a14 14 0 0 1 0 -1 l30 -8 v52 a15 15 0 1 1 -6 -12 l-18 5 v47 a15 15 0 1 1 -6 -12 z" opacity=".9"/></g></svg>`
+},
+fearless:{
+  bg:"linear-gradient(180deg,#fbe6ae 0%,#f3c666 52%,#dfa53a 100%)",
+  txt:"#5c3d07",muted:"rgba(92,61,7,.62)",panel:"rgba(255,255,255,.4)",cardBorder:"rgba(92,61,7,.22)",track:"rgba(92,61,7,.16)",
+  cap:"you take my hand and drag me head first",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7dc82"/><stop offset="1" stop-color="#dfa53a"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgf)"/><path d="M100 162 C36 114 54 58 100 88 C146 58 164 114 100 162Z" fill="#a86f16" opacity=".85"/><path d="M100 150 C58 116 70 74 100 95 C130 74 142 116 100 150Z" fill="#fff3cf"/><g fill="#fff"><circle cx="44" cy="44" r="2.6"/><circle cx="160" cy="58" r="3"/><circle cx="54" cy="152" r="2"/><circle cx="152" cy="148" r="2.4"/><circle cx="100" cy="28" r="2"/></g><text x="100" y="186" text-anchor="middle" font-size="13" font-style="italic" fill="#7a5410" font-family="serif">fearless</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g class="dr" fill="#fff" opacity=".3"><ellipse cx="200" cy="170" rx="130" ry="38"/><ellipse cx="820" cy="130" rx="160" ry="44"/></g><g class="fl2" fill="#fff" opacity=".2"><ellipse cx="520" cy="300" rx="100" ry="28"/></g><g class="tw" stroke="#fffbe8" stroke-width="2.5" opacity=".7"><line x1="300" y1="520" x2="360" y2="520"/><line x1="330" y1="490" x2="330" y2="550"/></g><g class="tw2" stroke="#fffbe8" stroke-width="2" opacity=".6"><line x1="740" y1="760" x2="790" y2="760"/><line x1="765" y1="735" x2="765" y2="785"/></g><g class="tw3" stroke="#fffbe8" stroke-width="1.8" opacity=".5"><line x1="140" y1="980" x2="180" y2="980"/><line x1="160" y1="960" x2="160" y2="1000"/></g><path d="M0 1400 L0 1220 Q250 1120 500 1220 T1000 1200 L1000 1400 Z" fill="#c78d1e" opacity=".25" class="pulse"/></svg>`
+},
+speaknow:{
+  bg:"linear-gradient(180deg,#d8c2f2 0%,#a377d2 55%,#5f3d92 100%)",
+  txt:"#33205e",muted:"rgba(51,32,94,.66)",panel:"rgba(255,255,255,.3)",cardBorder:"rgba(255,255,255,.5)",track:"rgba(51,32,94,.22)",
+  cap:"i think everyday is gonna be a great day",
+  svg:`<svg viewBox="0 0 200 200"><defs><radialGradient id="cgs" cx=".5" cy=".45" r=".8"><stop offset="0" stop-color="#c9a6ee"/><stop offset="1" stop-color="#6a47a3"/></radialGradient></defs><rect width="200" height="200" fill="url(#cgs)"/><path d="M100 104 C150 74 158 138 102 126 C58 116 66 58 118 80 C150 94 146 128 118 142" stroke="#f0e4ff" stroke-width="3" fill="none" opacity=".85" stroke-linecap="round"/><g fill="#fff"><circle cx="40" cy="40" r="2"/><circle cx="166" cy="46" r="2.4"/><circle cx="36" cy="150" r="1.8"/><circle cx="160" cy="156" r="2"/></g><text x="100" y="184" text-anchor="middle" font-size="13" font-style="italic" fill="#efe3ff" font-family="serif">Speak Now</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><path d="M520 1400 C400 1100 640 980 520 700 C420 470 580 340 490 90" stroke="#f0e4ff" stroke-width="2.5" fill="none" opacity=".3"/><g fill="#f0e4ff"><circle cx="160" cy="240" r="4" class="tw"/><circle cx="330" cy="170" r="3" class="tw2"/><circle cx="840" cy="220" r="4.5" class="tw3"/><circle cx="700" cy="400" r="3" class="tw"/><circle cx="190" cy="580" r="4" class="tw2"/><circle cx="900" cy="660" r="3.4" class="tw3"/><circle cx="430" cy="780" r="3" class="tw"/><circle cx="770" cy="940" r="4" class="tw2"/><circle cx="250" cy="1100" r="3.4" class="tw3"/><circle cx="880" cy="1200" r="4.4" class="tw"/></g><circle cx="500" cy="480" r="200" fill="#c9a6ee" opacity=".12" class="pulse"/></svg>`
+},
+red:{
+  bg:"linear-gradient(180deg,#b8462f 0%,#82291f 52%,#4e1712 100%)",
+  txt:"#ffe9dd",muted:"rgba(255,233,221,.66)",panel:"rgba(255,255,255,.12)",cardBorder:"rgba(255,220,200,.4)",track:"rgba(255,233,221,.22)",
+  cap:"loving him was red",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2544a"/><stop offset="1" stop-color="#7e1813"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgr)"/><path d="M28 66 C80 40 108 96 168 62" stroke="#e9cfa6" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M150 120 l7 9 9-7 -2 12 12 2 -12 4 4 12 -10-8 -8 10 1-13 -13-1z" fill="#e8c85a" opacity=".9"/><g fill="#f2b8ad" opacity=".8"><circle cx="60" cy="140" r="4"/><circle cx="90" cy="156" r="3"/><circle cx="120" cy="146" r="3.6"/></g><text x="100" y="184" text-anchor="middle" font-size="15" fill="#ffd9c9" font-family="serif" font-weight="bold">RED</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><path d="M-60 200 C220 100 340 340 620 240 C820 170 940 280 1060 220" stroke="#e9cfa6" stroke-width="26" fill="none" opacity=".32" stroke-linecap="round"/><g class="dr" fill="#f4b193" opacity=".5"><ellipse cx="180" cy="560" rx="24" ry="11" transform="rotate(-28 180 560)"/><ellipse cx="520" cy="660" rx="17" ry="8" transform="rotate(-40 520 660)"/><ellipse cx="300" cy="900" rx="22" ry="10" transform="rotate(-14 300 900)"/></g><g class="fl2" fill="#f4b193" opacity=".42"><ellipse cx="820" cy="480" rx="20" ry="9" transform="rotate(24 820 480)"/><ellipse cx="740" cy="1020" rx="18" ry="8" transform="rotate(30 740 1020)"/><ellipse cx="480" cy="1180" rx="16" ry="7" transform="rotate(-20 480 1180)"/></g><path d="M880 780 l8 10 10-8 -2 12 12 2 -12 5 4 12 -10-9 -9 10 1-14z" fill="#e8c85a" opacity=".55" class="tw"/><circle cx="150" cy="1180" r="150" fill="#e2544a" opacity=".1" class="pulse"/></svg>`
+},
+"1989":{
+  bg:"radial-gradient(900px 480px at 50% 108%, rgba(255,210,150,.22), transparent 60%), linear-gradient(180deg,#2a6db0 0%,#4a90c8 40%,#7db8e2 72%,#c8e4f8 100%)",
+  txt:"#eaf4ff",muted:"rgba(234,244,255,.62)",panel:"rgba(255,255,255,.12)",cardBorder:"rgba(234,244,255,.32)",track:"rgba(234,244,255,.2)",
+  cap:"welcome to new york",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cg8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dc3f5"/><stop offset="1" stop-color="#d8efff"/></linearGradient></defs><rect width="200" height="200" fill="url(#cg8)"/><rect x="44" y="30" width="112" height="140" rx="5" fill="#fdfdfa"/><rect x="56" y="42" width="88" height="94" fill="#a9d8f7"/><g fill="#33557a"><rect x="60" y="86" width="12" height="50"/><rect x="74" y="72" width="14" height="64"/><rect x="90" y="94" width="10" height="42"/><rect x="102" y="62" width="15" height="74"/><rect x="119" y="82" width="11" height="54"/><rect x="132" y="70" width="9" height="66"/></g><g stroke="#fff" stroke-width="2" fill="none" opacity=".9"><path d="M70 56 q5 -6 10 0"/><path d="M84 50 q5 -6 10 0"/></g><text x="100" y="172" text-anchor="middle" font-size="11" fill="#8a97a4" font-family="sans-serif" letter-spacing="2">1989</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g class="dr" fill="#fff" opacity=".6"><ellipse cx="180" cy="170" rx="130" ry="42"/><ellipse cx="820" cy="210" rx="150" ry="46"/></g><g class="dr2" fill="#fff" opacity=".42"><ellipse cx="500" cy="120" rx="100" ry="32"/><ellipse cx="260" cy="430" rx="110" ry="34"/></g><g class="fl" stroke="#fff" stroke-width="3.5" fill="none" opacity=".8"><path d="M340 330 q13 -15 26 0 q13 -15 26 0"/></g><g class="fl2" stroke="#fff" stroke-width="3" fill="none" opacity=".65"><path d="M670 410 q11 -13 22 0 q11 -13 22 0"/></g><g class="tw" stroke="#fff" stroke-width="2.5" fill="none" opacity=".55"><path d="M830 700 q9 -10 18 0 q9 -10 18 0"/></g><g fill="#2e4f73" opacity=".2"><rect x="0" y="1300" width="90" height="100"/><rect x="100" y="1240" width="70" height="160"/><rect x="180" y="1320" width="85" height="80"/><rect x="280" y="1260" width="60" height="140"/><rect x="350" y="1340" width="95" height="60"/><rect x="460" y="1230" width="65" height="170"/><rect x="540" y="1310" width="80" height="90"/><rect x="630" y="1270" width="55" height="130"/><rect x="700" y="1330" width="90" height="70"/><rect x="800" y="1250" width="70" height="150"/><rect x="880" y="1310" width="120" height="90"/></g></svg>`
+},
+reputation:{
+  bg:"radial-gradient(900px 500px at 50% 0%, rgba(255,255,255,.5), transparent 65%), linear-gradient(180deg,#e9e7e2 0%,#cfccc6 45%,#a5a19a 100%)",
+  txt:"#2a2724",muted:"rgba(42,39,36,.6)",panel:"rgba(255,255,255,.5)",cardBorder:"rgba(42,39,36,.24)",track:"rgba(42,39,36,.16)",
+  cap:"i'm the problem, it's me",
+  svg:`<svg viewBox="0 0 200 200"><defs><radialGradient id="cgp" cx=".5" cy=".4" r=".85"><stop offset="0" stop-color="#241d0e"/><stop offset="1" stop-color="#0a0805"/></radialGradient></defs><rect width="200" height="200" fill="url(#cgp)"/><path d="M46 150 C60 108 140 118 148 84 C152 62 118 60 112 78 C106 96 150 104 158 72" stroke="#c9a24e" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="160" cy="66" r="7" fill="#c9a24e"/><path d="M166 62 l10 -4 -8 7z" fill="#c9a24e"/><g fill="#c9a24e" opacity=".35"><circle cx="34" cy="34" r="2.2"/><circle cx="50" cy="26" r="1.6"/><circle cx="170" cy="150" r="2.4"/><circle cx="154" cy="164" r="1.6"/></g><text x="100" y="184" text-anchor="middle" font-size="13" fill="#c9a24e" font-family="serif" letter-spacing="3">reputation</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g fill="#3a3733"><circle cx="80" cy="130" r="4" class="tw" opacity=".3"/><circle cx="170" cy="80" r="2.8" class="tw2" opacity=".26"/><circle cx="260" cy="150" r="3.4" class="tw3" opacity=".3"/><circle cx="700" cy="100" r="3.8" class="tw" opacity=".28"/><circle cx="820" cy="170" r="2.6" class="tw2" opacity=".24"/><circle cx="910" cy="110" r="4.2" class="tw3" opacity=".3"/><circle cx="120" cy="1280" r="3.8" class="tw2" opacity=".26"/><circle cx="240" cy="1340" r="2.6" class="tw" opacity=".28"/><circle cx="780" cy="1310" r="3.4" class="tw3" opacity=".28"/><circle cx="890" cy="1250" r="2.8" class="tw" opacity=".24"/></g><path d="M540 1400 C440 1200 640 1120 560 940 C500 800 640 720 580 560" stroke="#4a4640" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/><circle cx="880" cy="430" r="8" fill="none" stroke="#3a3733" stroke-width="1.6" opacity=".3" class="pulse"/><circle cx="880" cy="430" r="16" fill="none" stroke="#3a3733" stroke-width="1" opacity=".18" class="pulse"/></svg>`
+},
+lover:{
+  bg:"radial-gradient(900px 480px at 20% 8%, rgba(255,255,255,.14), transparent 60%), linear-gradient(180deg,#5f2148 0%,#a34273 45%,#d97fa6 80%,#f2b8cf 100%)",
+  txt:"#ffeaf3",muted:"rgba(255,234,243,.62)",panel:"rgba(255,255,255,.13)",cardBorder:"rgba(255,234,243,.34)",track:"rgba(255,234,243,.2)",
+  cap:"i'm your daylight",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7b3d2"/><stop offset="1" stop-color="#ffe7f1"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgl)"/><g fill="#fff" opacity=".9"><ellipse cx="52" cy="52" rx="30" ry="14"/><ellipse cx="150" cy="40" rx="34" ry="13"/><ellipse cx="40" cy="150" rx="26" ry="11"/><ellipse cx="168" cy="150" rx="30" ry="12"/></g><g><rect x="78" y="96" width="44" height="44" fill="#d96f9f"/><path d="M72 96 L100 68 L128 96 Z" fill="#c85a90"/><path d="M100 118 c-6-6 -12-1 -8 4 l8 7 8-7 c4-5 -2-10 -8-4z" fill="#fff"/></g><text x="100" y="184" text-anchor="middle" font-size="13" font-style="italic" fill="#c85a90" font-family="serif">Lover</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g class="dr" fill="#fff" opacity=".7"><ellipse cx="200" cy="180" rx="130" ry="42"/><ellipse cx="780" cy="140" rx="150" ry="46"/></g><g class="dr2" fill="#fff" opacity=".5"><ellipse cx="480" cy="320" rx="100" ry="32"/><ellipse cx="240" cy="900" rx="120" ry="38" opacity=".8"/></g><g fill="#e56aa4" class="fl" opacity=".45"><path d="M430 640 c-11-11 -22-2 -16 7 l16 13 16-13 c6-9 -5-21 -16-7z"/><path d="M690 790 c-9-9 -18-1 -13 6 l13 11 13-11 c5-7 -4-19 -13-6z"/></g><g fill="#e56aa4" class="fl2" opacity=".38"><path d="M250 1150 c-10-10 -20-2 -14 7 l14 12 14-12 c6-9 -4-19 -14-7z"/><path d="M860 560 c-8-8 -16-1 -11 5 l11 9 11-9 c5-6 -3-16 -11-5z"/></g><circle cx="500" cy="520" r="190" fill="#e56aa4" opacity=".08" class="pulse"/></svg>`
+},
+folklore:{
+  bg:"radial-gradient(900px 500px at 50% 0%, rgba(233,237,228,.14), transparent 60%), linear-gradient(180deg,#242e27 0%,#3e4f43 45%,#66786a 80%,#93a493 100%)",
+  txt:"#e9ede4",muted:"rgba(233,237,228,.62)",panel:"rgba(255,255,255,.1)",cardBorder:"rgba(233,237,228,.3)",track:"rgba(233,237,228,.18)",
+  cap:"and if i'm on fire, you'll be made of ash too",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#57675a"/><stop offset="1" stop-color="#cdd8cb"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgo)"/><circle cx="138" cy="52" r="24" fill="#e9ede4" opacity=".9"/><g fill="#25352b"><path d="M30 170 L52 96 L74 170 Z"/><path d="M64 170 L86 110 L108 170 Z"/><path d="M110 170 L128 116 L146 170 Z"/><rect x="45" y="160" width="90" height="12" opacity=".6"/></g><g stroke="#e9ede4" stroke-width="2.4" opacity=".4"><line x1="0" y1="140" x2="200" y2="136"/><line x1="0" y1="152" x2="200" y2="150"/></g><text x="100" y="188" text-anchor="middle" font-size="13" font-style="italic" fill="#25352b" font-family="serif">folklore</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><circle cx="790" cy="190" r="85" fill="#e9ede4" opacity=".55" class="pulse"/><g fill="#2c3f33" opacity=".5"><path d="M30 1400 L120 1120 L210 1400 Z"/><path d="M170 1400 L270 1060 L370 1400 Z"/><path d="M810 1400 L900 1100 L1000 1400 Z"/><path d="M690 1400 L780 1140 L870 1400 Z"/></g><g class="dr" stroke="#e9ede4" stroke-width="2.5" opacity=".35"><line x1="-60" y1="1000" x2="1060" y2="985"/></g><g class="dr2" stroke="#e9ede4" stroke-width="2" opacity=".3"><line x1="-60" y1="1060" x2="1060" y2="1050"/></g><g class="fl" stroke="#3c5243" stroke-width="2.5" opacity=".35" fill="none"><path d="M480 780 C520 720 560 760 600 700"/></g></svg>`
+},
+evermore:{
+  bg:"linear-gradient(180deg,#eec084 0%,#c4744a 52%,#7c3529 100%)",
+  txt:"#4a1c12",muted:"rgba(74,28,18,.64)",panel:"rgba(255,255,255,.34)",cardBorder:"rgba(74,28,18,.28)",track:"rgba(74,28,18,.2)",
+  cap:"errand to run, and it's a long one",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eba45e"/><stop offset=".55" stop-color="#a9503c"/><stop offset="1" stop-color="#5e1f28"/></linearGradient></defs><rect width="200" height="200" fill="url(#cge)"/><path d="M40 40 C80 70 60 120 100 130 M100 130 C130 138 150 120 168 132 M100 130 C90 160 100 176 96 190" stroke="#2c1216" stroke-width="5" fill="none" stroke-linecap="round"/><g fill="#f4c69a"><ellipse cx="76" cy="86" rx="7" ry="4" transform="rotate(-30 76 86)"/><ellipse cx="132" cy="126" rx="7" ry="4" transform="rotate(20 132 126)"/><ellipse cx="98" cy="162" rx="6" ry="4" transform="rotate(-15 98 162)"/><ellipse cx="56" cy="56" rx="6" ry="4" transform="rotate(-40 56 56)"/></g><text x="100" y="188" text-anchor="middle" font-size="13" font-style="italic" fill="#ffe3c4" font-family="serif">evermore</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><path d="M-40 260 C200 360 320 220 560 320 C760 400 900 320 1040 380" stroke="#3c1810" stroke-width="10" fill="none" opacity=".35" stroke-linecap="round"/><g class="dr" fill="#f4c69a" opacity=".55"><ellipse cx="200" cy="520" rx="30" ry="13" transform="rotate(-30 200 520)"/><ellipse cx="420" cy="820" rx="28" ry="12" transform="rotate(-14 420 820)"/><ellipse cx="160" cy="1080" rx="26" ry="11" transform="rotate(-22 160 1080)"/></g><g class="fl2" fill="#f4c69a" opacity=".48"><ellipse cx="760" cy="440" rx="26" ry="11" transform="rotate(24 760 440)"/><ellipse cx="840" cy="940" rx="24" ry="10" transform="rotate(30 840 940)"/><ellipse cx="600" cy="1180" rx="22" ry="9" transform="rotate(16 600 1180)"/></g><g fill="#ffe9c9"><circle cx="880" cy="180" r="3.4" class="tw"/><circle cx="120" cy="300" r="3" class="tw2"/><circle cx="80" cy="820" r="2.6" class="tw3"/></g><circle cx="760" cy="240" r="140" fill="#eba45e" opacity=".14" class="pulse"/></svg>`
+},
+midnights:{
+  bg:"linear-gradient(180deg,#121836 0%,#212b60 55%,#33448a 100%)",
+  txt:"#e8ecff",muted:"rgba(232,236,255,.66)",panel:"rgba(255,255,255,.08)",cardBorder:"rgba(180,195,255,.38)",track:"rgba(232,236,255,.2)",
+  cap:"it's me, hi, i'm the problem",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2350"/><stop offset="1" stop-color="#38498f"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgm)"/><circle cx="128" cy="70" r="30" fill="#e8ecff"/><circle cx="142" cy="60" r="26" fill="#2c3a75"/><g fill="#dfe5ff"><path d="M40 44 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/><circle cx="70" cy="140" r="1.6"/><circle cx="46" cy="160" r="2"/><circle cx="160" cy="150" r="1.8"/><circle cx="170" cy="110" r="1.6"/></g><text x="88" y="122" font-size="34" fill="#dfe5ff" font-family="serif" font-weight="bold">13</text><text x="100" y="186" text-anchor="middle" font-size="12" fill="#aab5ff" font-family="sans-serif" letter-spacing="3">MIDNIGHTS</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><circle cx="800" cy="220" r="100" fill="#e8ecff" opacity=".85"/><circle cx="846" cy="184" r="86" fill="#1a2250"/><g fill="#dfe5ff"><circle cx="120" cy="140" r="2.2" class="tw"/><circle cx="380" cy="120" r="2" class="tw2"/><circle cx="520" cy="200" r="1.5" class="tw3"/><circle cx="90" cy="420" r="1.8" class="tw2"/><circle cx="300" cy="520" r="1.6" class="tw"/><circle cx="640" cy="480" r="2" class="tw3"/><circle cx="920" cy="560" r="1.6" class="tw2"/><circle cx="180" cy="760" r="2" class="tw3"/><circle cx="460" cy="880" r="1.5" class="tw"/><circle cx="920" cy="980" r="1.6" class="tw2"/><circle cx="140" cy="1080" r="1.8" class="tw3"/><circle cx="580" cy="1160" r="2" class="tw"/><circle cx="840" cy="1220" r="1.6" class="tw2"/><path d="M240 240 l2.4 5.6 5.6 2.4 -5.6 2.4 -2.4 5.6 -2.4-5.6 -5.6-2.4 5.6-2.4z" class="tw"/><path d="M760 820 l2.4 5.6 5.6 2.4 -5.6 2.4 -2.4 5.6 -2.4-5.6 -5.6-2.4 5.6-2.4z" class="tw2"/></g><g stroke="#aab5ff" stroke-width="1.8" opacity=".3" fill="none"><circle cx="500" cy="700" r="130"/><line x1="500" y1="570" x2="500" y2="700"/><line x1="500" y1="700" x2="585" y2="755"/><animateTransform attributeName="transform" type="rotate" from="0 500 700" to="360 500 700" dur="180s" repeatCount="indefinite"/></g></svg>`
+},
+ttpd:{
+  bg:"radial-gradient(900px 500px at 50% 0%, rgba(232,228,218,.08), transparent 60%), linear-gradient(180deg,#33332f 0%,#232320 55%,#141413 100%)",
+  txt:"#e8e4da",muted:"rgba(232,228,218,.6)",panel:"rgba(255,255,255,.07)",cardBorder:"rgba(232,228,218,.26)",track:"rgba(232,228,218,.16)",
+  cap:"i love you, it's ruining my life",
+  svg:`<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#ece4d0"/><rect x="64" y="26" width="72" height="52" fill="#fbf8ef" stroke="#c9bfa6" stroke-width="2"/><g stroke="#7a725e" stroke-width="2"><line x1="72" y1="38" x2="126" y2="38"/><line x1="72" y1="48" x2="118" y2="48"/><line x1="72" y1="58" x2="124" y2="58"/><line x1="72" y1="68" x2="110" y2="68"/></g><rect x="48" y="78" width="104" height="60" rx="8" fill="#3b352a"/><rect x="88" y="70" width="24" height="12" rx="3" fill="#57503f"/><rect x="42" y="138" width="116" height="14" rx="4" fill="#2c271f"/><g fill="#ece4d0"><circle cx="66" cy="98" r="4"/><circle cx="82" cy="98" r="4"/><circle cx="98" cy="98" r="4"/><circle cx="114" cy="98" r="4"/><circle cx="130" cy="98" r="4"/><circle cx="74" cy="114" r="4"/><circle cx="90" cy="114" r="4"/><circle cx="106" cy="114" r="4"/><circle cx="122" cy="114" r="4"/></g><text x="100" y="180" text-anchor="middle" font-size="9.5" fill="#57503f" font-family="sans-serif" letter-spacing="1.5">THE TORTURED POETS DEPARTMENT</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g stroke="#e8e4da" stroke-width="1.2" opacity=".14"><line x1="90" y1="200" x2="910" y2="200"/><line x1="90" y1="250" x2="800" y2="250"/><line x1="90" y1="300" x2="880" y2="300"/></g><g stroke="#e8e4da" stroke-width="1.2" opacity=".2"><line x1="120" y1="560" x2="880" y2="560"/><line x1="120" y1="610" x2="790" y2="610"/><line x1="120" y1="660" x2="850" y2="660"/><line x1="120" y1="710" x2="730" y2="710"/></g><text x="90" y="940" font-size="150" fill="#e8e4da" opacity=".05" font-family="serif" font-style="italic">poets</text><g class="dr" fill="#e8e4da" opacity=".35"><ellipse cx="840" cy="1080" rx="22" ry="7" transform="rotate(-20 840 1080)"/><circle cx="810" cy="1098" r="7"/></g><rect x="60" y="1240" width="380" height="3" fill="#e8e4da" opacity=".18"/></svg>`
+},
+showgirl:{
+  bg:"linear-gradient(180deg,#f7c185 0%,#df7f38 52%,#963c0f 100%)",
+  txt:"#4a2208",muted:"rgba(74,34,8,.62)",panel:"rgba(255,255,255,.38)",cardBorder:"rgba(74,34,8,.26)",track:"rgba(74,34,8,.18)",
+  cap:"every night's another show",
+  svg:`<svg viewBox="0 0 200 200"><defs><linearGradient id="cgh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7b06a"/><stop offset="1" stop-color="#b34a18"/></linearGradient></defs><rect width="200" height="200" fill="url(#cgh)"/><path d="M0 0 C40 30 40 90 30 200 L0 200 Z" fill="#7e2413"/><path d="M200 0 C160 30 160 90 170 200 L200 200 Z" fill="#7e2413"/><path d="M100 84 l6.5 13 14.5 2 -10.5 10 2.5 14.5 -13-7 -13 7 2.5-14.5 -10.5-10 14.5-2z" fill="#ffe0a8"/><g fill="#fff" opacity=".9"><circle cx="56" cy="120" r="2"/><circle cx="150" cy="132" r="2.2"/><circle cx="80" cy="156" r="1.8"/><circle cx="122" cy="60" r="2"/></g><text x="100" y="196" text-anchor="middle" font-size="11" font-style="italic" fill="#ffe9cf" font-family="serif">The Life of a Showgirl</text></svg>`,
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g stroke="#ffe0a8" stroke-width="4" opacity=".16" fill="none" class="pulse"><path d="M120 0 C260 400 160 900 340 1400"/><path d="M500 0 C620 500 480 950 640 1400"/><path d="M880 0 C800 450 940 900 820 1400"/></g><path d="M0 0 C70 350 50 750 130 1400 L0 1400 Z" fill="#7e2413" opacity=".4"/><path d="M1000 0 C930 350 950 750 870 1400 L1000 1400 Z" fill="#7e2413" opacity=".4"/><g fill="#ffe0a8"><path d="M260 320 l8 10 10-8 -2 12 12 2 -12 5 4 12 -10-9 -9 10 1-14z" class="tw" opacity=".7"/><path d="M740 480 l7 9 9-7 -2 11 11 2 -11 4 4 11 -9-8 -8 9 1-12z" class="tw2" opacity=".6"/><path d="M480 720 l8 10 10-8 -2 12 12 2 -12 5 4 12 -10-9 -9 10 1-13z" class="tw3" opacity=".65"/><path d="M640 1060 l7 9 9-7 -2 11 11 2 -11 4 4 11 -9-8 -8 9 1-12z" class="tw" opacity=".55"/><path d="M300 1180 l8 10 10-8 -2 12 12 2 -12 5 4 12 -10-9 -9 10 1-13z" class="tw2" opacity=".6"/></g><g fill="#fff"><circle cx="420" cy="380" r="2.2" class="tw3"/><circle cx="580" cy="540" r="1.8" class="tw"/><circle cx="200" cy="660" r="2" class="tw2"/><circle cx="800" cy="760" r="2.2" class="tw3"/></g></svg>`
+}
+};
+
+/* =============== Result theme: back to the classic dark & gold =============== */
+const RESULT_THEME={
+  bg:"radial-gradient(1100px 640px at 50% 0%, #1c1922 0%, #0d0d12 70%)",
+  txt:"#f2efe9",muted:"rgba(242,239,233,.62)",panel:"rgba(255,255,255,.06)",cardBorder:"rgba(255,255,255,.14)",track:"rgba(255,255,255,.14)",
+  deco:`<svg viewBox="0 0 1000 1400" preserveAspectRatio="xMidYMid slice"><g fill="#c9a86a"><circle cx="100" cy="160" r="2.6" class="tw"/><circle cx="220" cy="90" r="1.8" class="tw2"/><circle cx="800" cy="140" r="3" class="tw3"/><circle cx="900" cy="320" r="2" class="tw"/><circle cx="120" cy="1180" r="2.4" class="tw2"/><circle cx="860" cy="1240" r="2.6" class="tw3"/><path d="M500 60 l2.4 5.6 5.6 2.4 -5.6 2.4 -2.4 5.6 -2.4-5.6 -5.6-2.4 5.6-2.4z" class="tw2"/></g><circle cx="500" cy="480" r="260" fill="#c9a86a" opacity=".05" class="pulse"/></svg>`
+};
+
+/* =============== State =============== */
+let cur=0; const answers=[];
+
+/* =============== Intro chips =============== */
+(function(){
+  const wrap=document.getElementById("eraChips");
+  ALBUMS.forEach(a=>{const c=document.createElement("span");c.className="chip";c.style.setProperty("--chipc",a.era);c.textContent=a.album;wrap.appendChild(c);});
+})();
+
+/* =============== Theme apply =============== */
+function applyTheme(t,accent){
+  const rs=document.documentElement.style;
+  rs.setProperty("--txt",t.txt);rs.setProperty("--muted",t.muted);
+  rs.setProperty("--panel",t.panel);rs.setProperty("--cardBorder",t.cardBorder);rs.setProperty("--track",t.track);
+  if(accent){rs.setProperty("--era",accent);rs.setProperty("--eraGlow","rgba(201,162,78,.35)");rs.setProperty("--era2","#f2dfae");}
+  document.body.style.background=t.bg;
+  document.getElementById("deco").innerHTML=t.deco||"";
+}
+
+/* =============== Song preview (hover / long-press) =============== */
+const previewCache={};
+let previewAudio=null,previewCard=null,hoverTimer=null,pressTimer=null,loadSeq=0;
+
+function itunesLookup(query){
+  return new Promise(resolve=>{
+    if(previewCache[query]!==undefined)return resolve(previewCache[query]);
+    const cb="itunesCb"+(++loadSeq)+"_"+Date.now();
+    const script=document.createElement("script");
+    const timer=setTimeout(()=>{cleanup();previewCache[query]=null;resolve(null);},6000);
+    function cleanup(){clearTimeout(timer);try{delete window[cb];}catch(e){window[cb]=undefined;}script.remove();}
+    window[cb]=data=>{
+      cleanup();
+      const hit=data&&data.results&&data.results.length?data.results[0]:null;
+      previewCache[query]=hit?hit.previewUrl:null;
+      resolve(previewCache[query]);
+    };
+    script.src=`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=1&country=US&callback=${cb}`;
+    script.onerror=()=>{cleanup();previewCache[query]=null;resolve(null);};
+    document.head.appendChild(script);
+  });
+}
+function stopPreview(){
+  clearTimeout(hoverTimer);clearTimeout(pressTimer);
+  if(previewAudio){
+    const a=previewAudio;previewAudio=null;
+    let v=a.volume;
+    const fade=setInterval(()=>{v-=0.12;if(v<=0){clearInterval(fade);a.pause();a.src="";}else a.volume=v;},40);
+  }
+  if(previewCard){previewCard.classList.remove("playing");previewCard=null;}
+}
+function playPreview(card,query){
+  stopPreview();
+  previewCard=card;card.classList.add("playing");
+  const mySeq=++loadSeq;
+  itunesLookup(query).then(url=>{
+    if(mySeq!==loadSeq||!previewCard)return;
+    if(!url){failToast();stopPreview();return;}
+    const a=new Audio();previewAudio=a;a.src=url;a.volume=0;
+    a.play().then(()=>{
+      const up=setInterval(()=>{if(previewAudio!==a){clearInterval(up);return;}a.volume=Math.min(.85,a.volume+0.1);if(a.volume>=.85)clearInterval(up);},60);
+      setTimeout(()=>{if(previewAudio===a)stopPreview();},12000);
+    }).catch(()=>{failToast();stopPreview();});
+  });
+}
+let failTimer=null;
+function failToast(){
+  const el=document.getElementById("audioFail");el.classList.add("show");
+  clearTimeout(failTimer);failTimer=setTimeout(()=>el.classList.remove("show"),1800);
+}
+function attachPreview(card,query){
+  const isTouch=window.matchMedia("(pointer:coarse)").matches;
+  if(!isTouch){
+    card.addEventListener("mouseenter",()=>{clearTimeout(hoverTimer);hoverTimer=setTimeout(()=>playPreview(card,query),220);});
+    card.addEventListener("mouseleave",stopPreview);
+  }else{
+    card.addEventListener("touchstart",e=>{clearTimeout(pressTimer);pressTimer=setTimeout(()=>playPreview(card,query),420);},{passive:true});
+    card.addEventListener("touchend",stopPreview);
+    card.addEventListener("touchmove",stopPreview,{passive:true});
+    card.addEventListener("touchcancel",stopPreview);
+  }
+}
+window.addEventListener("pagehide",stopPreview);
+
+/* =============== Quiz flow =============== */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function startQuiz(){cur=0;answers.length=0;renderQ();showScreen("quiz");}
+
+function renderQ(){
+  const a=ALBUMS[cur],t=THEMES[a.key];
+  applyTheme(t);
+  document.documentElement.style.setProperty("--era",a.era);
+  document.documentElement.style.setProperty("--eraGlow",a.eraGlow);
+  document.documentElement.style.setProperty("--era2",a.era2||a.era);
+  document.getElementById("coverArt").innerHTML=(t.svg||"")+'<span class="cover-shine"></span>';
+  document.getElementById("coverCap").textContent=t.cap||"";
+  document.getElementById("albumName").style.fontFamily=a.serif;
+  document.getElementById("albumName").style.fontStyle=a.italic?"italic":"normal";
+  document.getElementById("qAlbumName").textContent=a.album;
+  document.getElementById("eraTag").textContent=a.year;
+  document.getElementById("albumName").textContent=a.album;
+  document.getElementById("qQuestion").textContent=a.q;
+  document.getElementById("qNow").textContent=String(cur+1).padStart(2,"0")+" / 12";
+  document.getElementById("progFill").style.width=((cur)/12*100)+"%";
+  const songsEl=document.getElementById("songs");songsEl.innerHTML="";
+  a.songs.forEach((s,i)=>{
+    const b=document.createElement("button");b.className="song-card";
+    b.innerHTML=`<span class="glow"></span><span class="num">${String(i+1).padStart(2,"0")}</span><span class="name">${s[0]}</span>`;
+    b.onclick=()=>pick(s[1]);
+    attachPreview(b,`Taylor Swift ${s[0].replace(/\s*\(.*\)\s*/g,"")}`);
+    songsEl.appendChild(b);
+  });
+  document.getElementById("cardCount").textContent=`✦ 共 ${a.songs.length} 首歌 · 全部收录 ✦`;
+  document.querySelectorAll(".song-card").forEach((c,i)=>{c.style.animation=`fadeUp .45s ease both`;c.style.animationDelay=(i*22)+"ms";});
+  const quiz=document.getElementById("quiz");quiz.classList.remove("fade-in");void quiz.offsetWidth;quiz.classList.add("fade-in");
+}
+
+function pick(trait){
+  stopPreview();answers.push(trait);cur++;
+  document.getElementById("progFill").style.width=(cur/12*100)+"%";
+  if(cur<12){renderQ();}else{renderResult();}
+}
+
+/* =============== Result =============== */
+function renderResult(){
+  const count={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  answers.forEach(t=>count[t]++);
+  const type=DIMS.map(d=>count[d[0]]>=count[d[1]]?d[0]:d[1]).join("");
+  const r=RESULTS[type]||RESULTS.INFP;
+  const a=ALBUMS[cur-1],t=THEMES[a.key];
+  applyTheme(RESULT_THEME,"#c9a86a");
+  document.getElementById("coverArtR").innerHTML=(t.svg||"")+'<span class="cover-shine"></span>';
+  document.getElementById("coverCapR").textContent=t.cap||"";
+  const letters=document.getElementById("mbtiLetters");letters.innerHTML="";
+  [...type].forEach(ch=>{const d=document.createElement("div");d.className="mbti-letter";d.textContent=ch;letters.appendChild(d);});
+  document.getElementById("typeTitle").textContent=r.title;
+  document.getElementById("typeSong").textContent="♫ 主题曲 · "+r.song;
+  document.getElementById("typeDesc").innerHTML=r.desc;
+  const dimsEl=document.getElementById("dims");dimsEl.innerHTML="";
+  DIMS.forEach(d=>{
+    const total=count[d[0]]+count[d[1]]||1;const pct=Math.round(count[d[0]]/total*100);
+    const div=document.createElement("div");div.className="dim";
+    div.innerHTML=`<span class="lab">${d[2]}</span><span class="bar"><span class="fill" style="width:${pct}%"></span></span><span class="pct">${pct}%</span>`;
+    dimsEl.appendChild(div);
+  });
+  const resEl=document.getElementById("resonant");
+  const poles=DIMS.map(d=>count[d[0]]>=count[d[1]]?d[0]:d[1]);
+  const lines=[];
+  DIMS.forEach((d,di)=>{
+    const pole=poles[di];
+    const ai=answers.findIndex((x,k)=>x===pole);
+    if(ai>=0){lines.push(`<li><b>${ALBUMS[ai].album}</b> · 《${ALBUMS[ai].songs.filter(s=>s[1]===pole).map(s=>s[0])[0]||ALBUMS[ai].songs[0][0]}》 → ${d[2].split(" · ")[0]} 的关键一票</li>`);}
+  });
+  resEl.innerHTML=lines.join("");
+  showScreen("result");
+}
+
+function copyLink(){
+  const url=location.href.split("#")[0]+"#result";
+  const done=()=>{const c=document.getElementById("copied");c.classList.add("show");setTimeout(()=>c.classList.remove("show"),2500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText("我做了一个 Taylor Swift 12 张专辑全曲目版 MBTI 性格测试，来测测你是哪个 Era：\n"+url).then(done).catch(()=>fallback());}
+  else fallback();
+  function fallback(){const ta=document.createElement("textarea");ta.value=url;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){}document.body.removeChild(ta);}
+}
+if(location.hash==="#result"){setTimeout(()=>{cur=11;renderResult();},300);}
+</script>
+</body>
+</html>
